@@ -23,7 +23,7 @@ def selectFeatures(data:pd.DataFrame,features:Optional[list]=None,label=None,str
         'filter': filterFeatures,
         'wrap': wrapFeatures,
     }
-    return strategy_map[strategy](X=X,Y=Y,strategy=method,K=K)
+    return strategy_map[strategy](X=X,Y=Y,strategy=method,K=K), Y
 
 def embeddedFeatures(X,Y,strategy:str="SVC"):
     strategy_map = {
@@ -61,6 +61,5 @@ if __name__ == '__main__':
         projectPath, 'dataset', "classification.csv"))
     # print(data.shape)
     data,_,_ =preprocess(data,scaleStrategy='std')
+    X,Y = selectFeatures(data,K=10)
     # print(data.shape)
-    data = selectFeatures(data,K=10)
-    print(data.shape)
