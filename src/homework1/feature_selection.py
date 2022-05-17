@@ -1,49 +1,57 @@
+from copy import deepcopy
 import numpy as np
 import sklearn
 import pandas as pd
 from typing import Optional
-from scipy.stats import pearsonr
-from minepy import MINE
-from sklearn.feature_selection import SelectKBest,chi2
-from sklearn.linear_model import SGDClassifier
+from sklearn.feature_selection import SelectKBest,chi2,mutual_info_classif
+from sklearn.linear_model import RidgeClassifier
 from sklearn.feature_selection import RFE,SelectFromModel
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.svm import LinearSVC
 
-'''
- FIXME : lots of problems 
- need to read and modify more
-'''
-def selectFeatures(data:pd.DataFrame,features:Optional[list]=None,label=None,strategy='filter',method='pearsonr',K=5):
+def selectFeatures(data:pd.DataFrame,features:Optional[list]=None,label=None,strategy='filter',method='mic',K=5,embedded=True):
     if features is None:
         features=list(data.columns.values[:-1])
     if label is None:
         label=data.columns.values[-1]
+    X=data[features]
+    Y=data[label]
+    X = dropFeatures(X)
+    if embedded:
+        X=embeddedFeatures(X,Y)
     strategy_map = {
         'filter': filterFeatures,
-        'wrap': wrapFeatures
+        'wrap': wrapFeatures,
     }
-    return strategy_map[strategy](data=data,features=features,label=label,strategy=method,K=K)
+    return strategy_map[strategy](X=X,Y=Y,strategy=method,K=K)
 
-
-def filterFeatures(data:pd.DataFrame,features:Optional[list],label,strategy:str='chi2',K=5):
-    def mic(x, y):
-        m = MINE()
-        m.compute_score(x, y)
-        return (m.mic(), 0.5)
+def embeddedFeatures(X,Y,strategy:str="SVC"):
     strategy_map = {
-        'pearsonr': lambda X, Y: np.array(map(lambda x:pearsonr(x, Y), X.T)).T,
+        'SVC': SelectFromModel(LinearSVC(C=0.01,penalty="l1", dual=False).fit(X,Y),prefit=True)
+    }
+    return strategy_map[strategy].transform(X)
+
+def filterFeatures(X,Y,strategy:str='chi2',K=5):
+    strategy_map = {
+        'mic': mutual_info_classif,
         'chi2': chi2,
-        'mic': lambda X, Y: np.array(map(lambda x:mic(x, Y), X.T)).T
     }
-    return SelectKBest(strategy_map[strategy],k=K).fit_transform(data[features],data[label])
+    return SelectKBest(strategy_map[strategy],k=K).fit_transform(X,Y)
 
 
 
-def wrapFeatures(data:pd.DataFrame,features:Optional[list],label,strategy='RFE',K=5):
+def wrapFeatures(X,Y,strategy='RFE',K=5):
     strategy_map = {
-        'RFE': RFE(estimator=SGDClassifier(),n_features_to_select=K),
+        'RFE': RFE(estimator=RidgeClassifier(),n_features_to_select=K),
     }
-    return strategy_map[strategy].fit_transform(data[features],data[label])
+    return strategy_map[strategy].fit_transform(X,Y)
 
+def dropFeatures(X):
+    X = deepcopy(X)
+    selector = VarianceThreshold()
+    X = selector.fit_transform(X)
+    # X = VarianceThreshold(np.median(X.var().values)).fit_transform(X)
+    return X
 
 if __name__ == '__main__':
     import os
@@ -51,6 +59,8 @@ if __name__ == '__main__':
     projectPath = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     data = pd.read_csv(os.path.join(
         projectPath, 'dataset', "classification.csv"))
-    data,_,_ =preprocess(data,scaleStrategy='minmax')
-    data = selectFeatures(data)
-    print(data)
+    # print(data.shape)
+    data,_,_ =preprocess(data,scaleStrategy='std')
+    # print(data.shape)
+    data = selectFeatures(data,K=10)
+    print(data.shape)
