@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib
 import os
 import matplotlib.pyplot as plt
+from preprocessing import preprocess
+from feature_selection import selectFeatures
 
 if __name__ == '__main__':
     projectPath = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))

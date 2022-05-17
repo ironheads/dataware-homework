@@ -1,15 +1,17 @@
 import sklearn
+from sklearn import metrics
 from sklearn.metrics import classification_report,f1_score,roc_curve,auc
 from numpy import mean
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 import matplotlib
+from sklearn.preprocessing import LabelEncoder
 
-def kFoldValid(model,data,kfoldnums, features:list,labels:list,criterion = f1_score,shuffle=True,random_state = 12,reportEachFold=False):
+def kFoldValid(model,data,kfoldnums, features:list,labels:list ,label_encoder: LabelEncoder,criterion = f1_score,shuffle=True,random_state = 12,reportEachFold=False):
     kf = sklearn.model_selection.KFold(kfoldnums,shuffle,random_state)
     X = data[features]
     Y = data[labels]
-    labelTypes = [] # FIXME: label types assign
+    labelTypes = label_encoder.classes_
     metrics = []
     for train,valid in kf.split(data):
         train_x=X.iloc[train,:]
