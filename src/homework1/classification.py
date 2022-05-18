@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from preprocessing import preprocess,dropEmpty
 from feature_selection import selectFeatures
 from analysis import kFoldValid
-from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 import argparse
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import  AdaBoostClassifier
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         X,Y = data[features].values,data[label].values
     
     model_map = {
-        'SVC': LinearSVC(random_state=1234),
+        'SVC': SVC(probability=True,random_state=1234),
         'KNC': KNeighborsClassifier(),
         'ABC': AdaBoostClassifier(random_state=1234)
     }

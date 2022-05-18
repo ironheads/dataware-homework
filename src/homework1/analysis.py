@@ -33,7 +33,8 @@ def kFoldValid(model, X, Y ,kfoldnums ,label_encoder: LabelEncoder ,shuffle=True
             disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=range(n_classes))
             disp.plot()
             plt.show()
-            score_y = model.decision_function(valid_x)
+            score_y = model.predict_proba(valid_x)
+            # print(score_y.shape)
             # Compute ROC curve and ROC area for each class
             fpr = dict()
             tpr = dict()
