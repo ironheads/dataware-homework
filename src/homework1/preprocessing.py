@@ -106,7 +106,9 @@ if __name__ == '__main__':
     projectPath = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     data = pd.read_csv(os.path.join(
         projectPath, 'dataset', "classification.csv"))
-    data,fe,le = preprocess(data)
+    # data,fe,le = preprocess(data)
+    # print(data)
+    data = dropEmpty(data)
     print(data)
     # print(fillWithMedian(data1,list(data1.columns.values[:-1])))
     # print(data)

@@ -16,7 +16,7 @@ def kFoldValid(model, X, Y ,kfoldnums ,label_encoder: LabelEncoder ,shuffle=True
     Y = label_binarize(Y,classes=range(len(labelTypes)))
     n_classes = Y.shape[1]
     metrics = []
-    for train,valid in kf.split(data):
+    for train,valid in kf.split(X):
         train_x=X[train,:]
         train_y=Y[train,:]
         model.fit(train_x,train_y)

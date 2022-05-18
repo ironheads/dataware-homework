@@ -9,21 +9,22 @@ from sklearn.feature_selection import RFE,SelectFromModel
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.svm import LinearSVC
 
-def selectFeatures(data:pd.DataFrame,features:Optional[list]=None,label=None,strategy='filter',method='mic',K=5,embedded=True):
+
+def selectFeatures(data:pd.DataFrame,features:Optional[list]=None,label=None,strategy='filter',method='mic',K=5,embedded=False):
     if features is None:
         features=list(data.columns.values[:-1])
     if label is None:
         label=data.columns.values[-1]
     X=data[features]
     Y=data[label]
-    X = dropFeatures(X)
+    # X = dropFeatures(X)
     if embedded:
         X=embeddedFeatures(X,Y)
     strategy_map = {
         'filter': filterFeatures,
         'wrap': wrapFeatures,
     }
-    return strategy_map[strategy](X=X,Y=Y,strategy=method,K=K), Y
+    return strategy_map[strategy](X=X,Y=Y,strategy=method,K=K), Y.values
 
 def embeddedFeatures(X,Y,strategy:str="SVC"):
     strategy_map = {
