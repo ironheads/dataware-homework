@@ -6,7 +6,7 @@ class AgglomerativeClustering(object):
     def __init__(self, 
                 n_clusters:Optional[int] = 2,
                 *,
-                affinity:Union[str,Callable] = 'euclidean',
+                affinity:Union[str,Callable] = 'eculidean',
                 memory = None,
                 connectivity=None, 
                 compute_full_tree=None, 
@@ -70,6 +70,7 @@ class AgglomerativeClustering(object):
             self.children_[num_branch-n_samples,0]=set_min1
             self.children_[num_branch-n_samples,1]=set_min2
             num_branch+=1
+            print(num_branch-n_samples)
         class_id = 0
         self.n_clusters_ = 2*n_samples-num_branch
         for values in sets.values():
@@ -107,6 +108,7 @@ class AgglomerativeClustering(object):
             self.children_[num_branch-n_samples,0]=set_min1
             self.children_[num_branch-n_samples,1]=set_min2
             num_branch+=1
+            print(num_branch-n_samples)
         class_id = 0
         self.n_clusters_ = n_clusters
         for values in sets.values():
@@ -165,6 +167,8 @@ class AgglomerativeClustering(object):
         return distance_map[self.linkage]
 
     def _precompute_distance(self,X):
+        if self.linkage == 'ward':
+            return None
         if self.affinity == 'precomputed':
             return self.connectivity
         n_samples = len(X)
@@ -180,7 +184,7 @@ class AgglomerativeClustering(object):
             return self.affinity
         else:
             affinity_map = {
-                'euclidean': lambda x,y : np.linalg.norm(x-y),
+                'eculidean': lambda x,y : np.linalg.norm(x-y),
                 'l1': lambda x,y: np.linalg.norm(x-y,ord=1),
                 'l2': lambda x,y: np.linalg.norm(x-y,ord=2),
                 'manhattan': lambda x,y: np.linalg.norm(x-y,ord=1),
@@ -193,9 +197,13 @@ class AgglomerativeClustering(object):
                 raise ValueError('affinity value error')
 
 if __name__ == '__main__':
-    clustering = AgglomerativeClustering(3,affinity='l1',linkage='single')
-    print(clustering._distance_function)
-    X = np.array([[0, 0, 0], [0, 0, 0], [1, 1, 1], [1, 1, 1],[2, 2, 2], [2, 2, 2]])
-    true_labels = np.array([0, 0, 1, 1, 2, 2])
+    import numpy as np
+    import os
+    import pandas as pd
+    clustering = AgglomerativeClustering(100)
+    projectPath = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    data = pd.read_csv(os.path.join(projectPath,'dataset',"cluster.csv"))
+    X = data[1:-1].values
+    # true_labels = np.array([0, 0, 1, 1, 2, 2])
     labels = clustering.fit(X)
     print(labels)
