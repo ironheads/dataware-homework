@@ -13,11 +13,13 @@ from sklearn.ensemble import  AdaBoostClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
+import knn
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='classification')
     parser.add_argument('--without_preprocessing', action='store_true', help='without preprocessing')
     parser.add_argument('--without_feature_selection', action='store_true', help='without feature selection')
-    parser.add_argument('--model', type=str, choices=['SVC', 'KNC','ABC'], default='SVC', help="choose which model to use")
+    parser.add_argument('--model', type=str, choices=['KNN', 'SVC', 'KNC', 'ABC'], default='KNN', help="choose which model to use")
     parser.add_argument('--num_features',type=int, default=12,help="the number of features reserved to fit the model")
     parser.add_argument('--num_fold',type=int,default=5,help="the K Fold Number K")
     args = parser.parse_args()
@@ -35,6 +37,7 @@ if __name__ == '__main__':
         X,Y = data[features].values,data[label].values
     
     model_map = {
+        'KNN': knn.knn(),
         'SVC': SVC(probability=True,random_state=1234),
         'KNC': KNeighborsClassifier(),
         'ABC': AdaBoostClassifier(random_state=1234)
