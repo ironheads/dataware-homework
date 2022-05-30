@@ -61,7 +61,7 @@
 | macro avg    | 0.74      | 0.71   | 0.72     | 884     |
 | weighted avg | 0.75      | 0.75   | 0.75     | 884     |
 
-#####采用特征维度为12
+##### 采用特征维度为12
 
 |              | precision | recall | f1-score | support |
 | ------------ | --------- | ------ | -------- | ------- |
@@ -98,6 +98,7 @@
 <img src="README.assets/matrix_svc.png" alt="matrix_svc" style="zoom:40%;" />
 <img src="README.assets/Figure_svc.png" alt="Figure_svc" style="zoom:40%;" />
 </center>
+
 ##### K最近邻分类器
 
 准确率0.85。
@@ -108,6 +109,7 @@
 <img src="README.assets/matrix_knn.png" alt="matrix_knn" style="zoom:40%;" />
 <img src="README.assets/Figure_knn.png" alt="Figure_knn" style="zoom:40%;" />
 </center>
+
 ##### Adaboost分类器
 
 准确率0.85。
