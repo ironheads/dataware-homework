@@ -30,7 +30,7 @@ if __name__ == '__main__':
     if not args.without_preprocessing:
         data,feature_dict,label_encoder = preprocess(data,features,label)
     else:
-        data,feature_dict,label_encoder = raw_data(data,features)
+        data,feature_dict,label_encoder = raw_data(data,features,label)
     if not args.without_feature_selection:
         X,Y=selectFeatures(data,features,label,K=args.num_features)
     else:
@@ -46,6 +46,7 @@ if __name__ == '__main__':
     # print(Y)
     
     model = OneVsRestClassifier(model_map[args.model])
+    # print(model)
     print(kFoldValid(model,X,Y,args.num_fold,label_encoder))
     # print(list(data['治疗方案'].unique()))
     
