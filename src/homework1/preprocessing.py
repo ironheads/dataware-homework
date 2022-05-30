@@ -101,6 +101,12 @@ def preprocess(data:pd.DataFrame,features:Optional[list]=None,label=None,imputeS
     data = scaleFeatures(data,features,scaleStrategy)
     return data,features_encoder,label_encoder
 
+def raw_data(data:pd.DataFrame,features:Optional[list]=None,label=None):
+    data,features_encoder = encodeFeatures(data,features)
+    data, label_encoder=encodeLabel(data,label)
+    data = dropEmpty(data)
+    return data,features_encoder,label_encoder
+
 if __name__ == '__main__':
     import os
     projectPath = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))

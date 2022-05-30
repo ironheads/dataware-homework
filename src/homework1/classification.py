@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib
 import os
 import matplotlib.pyplot as plt
-from preprocessing import preprocess,dropEmpty
+from preprocessing import preprocess,dropEmpty,raw_data
 from feature_selection import selectFeatures
 from analysis import kFoldValid
 from sklearn.svm import SVC
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     if not args.without_preprocessing:
         data,feature_dict,label_encoder = preprocess(data,features,label)
     else:
-        data = dropEmpty(data,features)
+        data,feature_dict,label_encoder = raw_data(data,features)
     if not args.without_feature_selection:
         X,Y=selectFeatures(data,features,label,K=args.num_features)
     else:
