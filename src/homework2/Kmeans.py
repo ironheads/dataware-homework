@@ -188,9 +188,10 @@ if __name__ == '__main__':
     import numpy as np
     import os
     import pandas as pd
-    clustering = KmeansClustering(10,max_iter=300)
+    clustering = KmeansClustering(10, max_iter=300)
     projectPath = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    data = pd.read_csv(os.path.join(projectPath,'dataset',"cluster.csv"))
-    X = data[1:-1].values
+    data = pd.read_csv(os.path.join(projectPath, 'dataset', "cluster.csv"))
+    X = data.values[:, 1:-1]
+    print(X)
     labels = clustering.fit_predict(X)
     print(labels)
